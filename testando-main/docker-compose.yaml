@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo
+    volumes: 
+      - ./data:/data/db
+  redisdb:
+    image: redis
+    ports:
+      - 6379:6379
+    # OBS: Optei por não criar um volume aqui por ser um banco de memória.
+  register:
+    build: ./register
+    ports:
+      - '80:80'
+    depends_on:
+      - mongodb
+      - redisdb
+  searcher:
+    build: ./searcher
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mongodb
+      - redisdb
